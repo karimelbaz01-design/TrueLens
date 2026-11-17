@@ -14,7 +14,7 @@ function measurePixels(rgba,width,height) {
   edgeCount+=2;
  }
  const mean=sum/count,contrast=Math.sqrt(Math.max(0,sumSq/count-mean*mean));
- return {brightness:Math.round(mean),contrast:Math.round(contrast*10)/10,edgeDifference:edgeCount?Math.round(edges/edgeCount*10)/10:0,width,height};
+ return {brightness:Math.round(mean+1e-10),contrast:Math.round(contrast*10)/10,edgeDifference:edgeCount?Math.round(edges/edgeCount*10)/10:0,width,height};
 }
 async function analyzeImageVisual(file) {
  if(!file.type.startsWith('image/'))return {status:'unsupported'};
