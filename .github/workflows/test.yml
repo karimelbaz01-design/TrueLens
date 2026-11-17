@@ -13,5 +13,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --check app.js && node --check metadata.js && node --check png-metadata.js && node --check origin-trace.js && node --check signature.js && node --check vision.js && node --check ai-evaluation.js
+      - run: node --check app.js && node --check metadata.js && node --check png-metadata.js && node --check origin-trace.js && node --check signature.js && node --check vision.js && node --check ai-evaluation.js && node --check experimental-detector.js
       - run: node tests/metadata.test.cjs && node tests/ai-evaluation.test.cjs
