@@ -16,10 +16,11 @@ const ctx=vm.createContext({
 vm.runInContext(source,ctx);
 (async()=>{
   ctx.decodeAiInput=async()=>({width:2000,height:1000,draw(_ctx,w,h){ctx.drawn=[w,h]},close(){ctx.closed=true}});
-  ctx.experimentalPipelinePromise=Promise.resolve({
+  ctx.mockPipeline=Promise.resolve({
     RawImage:{fromBlob:async(blob)=>{assert.equal(blob.type,'image/png');return {pixels:true}}},
     classifier:async(img)=>{assert.equal(img.pixels,true);return [{label:'FAKE',score:.92},{label:'REAL',score:.08}]}
   });
+  vm.runInContext('experimentalPipelinePromise=mockPipeline',ctx);
   ctx.file={type:'image/png',size:1024};
   const result=await vm.runInContext('runExperimentalDetector(file)',ctx);
   assert.equal(result.verified,false);
