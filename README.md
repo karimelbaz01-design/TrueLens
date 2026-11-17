@@ -21,3 +21,4 @@ Apri la pagina tramite un server HTTPS o localhost. Su GitHub Pages puoi aggiung
 4. Packaging Android
 
 Licenza da definire prima di distribuire contributi esterni.
+\n## Limiti di memoria (Alpha 0.8)\nPer evitare blocchi sui telefoni, i metadati JPEG/PNG vengono letti dai primi 4 MiB e SHA-256 viene calcolato solo per file fino a 64 MiB. I file più grandi sono comunque selezionabili, ma senza hash. L'anteprima precedente viene rilasciata quando si cambia file; i risultati di analisi obsolete vengono ignorati.\n
