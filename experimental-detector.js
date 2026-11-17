@@ -34,7 +34,6 @@ async function runExperimentalDetector(file){
  const classifier=await experimentalPipelinePromise;
  // Decode locally and downscale to avoid huge source images.
  const bitmap=await createImageBitmap(file);
- let blobUrl;
  try{
   const canvas=document.createElement('canvas');
   const scale=Math.min(1,1024/Math.max(bitmap.width,bitmap.height));
@@ -44,8 +43,7 @@ async function runExperimentalDetector(file){
   if(!ctx)throw Error('Canvas non disponibile');
   ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
   const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Impossibile elaborare l’immagine')),'image/png'));
-  blobUrl=URL.createObjectURL(blob);
-  const outputs=await classifier(blobUrl,{top_k:2});
+  const outputs=await classifier(blob,{top_k:2});
   return interpretAiScores(outputs);
- }finally{bitmap.close();if(blobUrl)URL.revokeObjectURL(blobUrl);}
+ }finally{bitmap.close();}
 }
