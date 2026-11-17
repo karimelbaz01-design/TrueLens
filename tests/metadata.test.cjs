@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const ctx=vm.createContext({TextDecoder,Uint8Array,DataView});
-for(const file of ['metadata.js','png-metadata.js','origin-trace.js','signature.js']){
+for(const file of ['metadata.js','png-metadata.js','origin-trace.js','signature.js','vision.js']){
  vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
 }
 const run=(s)=>vm.runInContext(s,ctx);
@@ -17,4 +17,7 @@ ctx.sample=png.buffer;
 assert.equal(run("inspectPng(sample)[0][1]"),'10 × 20');
 assert.equal(run("inspectSignature(new Uint8Array([255,216,255,0]).buffer,'image/jpeg').match"),true);
 assert.equal(run("inspectSignature(new Uint8Array([255,216,255,0]).buffer,'image/png').match"),false);
-console.log('TrueLens metadata tests passed');
+const pixels=new Uint8Array([0,0,0,255,255,255,255,255,0,0,0,255,255,255,255,255]);ctx.pixels=pixels;
+assert.equal(run("measurePixels(pixels,2,2).brightness"),128);
+assert.equal(run("measurePixels(pixels,2,2).contrast"),127.5);
+console.log('TrueLens metadata and vision tests passed');
