@@ -1,3 +1,5 @@
+// Graceful fallback if a stale service worker serves scripts from different releases.
+if(typeof tl!=='function')globalThis.tl=(key)=>({loading:'Analisi in corso…',pending:'Origine non determinata',done:'Analisi completata',doneVideo:'Analisi completata',copy:'Copia rapporto',aiLoading:'Caricamento modello…',uncertain:'Origine non determinabile',conflict:'Risultati discordanti',modelResult:'Risultato modello',scores:'Score non calibrati',aiClass:'AI',photoClass:'Fotografica',warning:'Non è una prova di autenticità',modelUnavailable:'Rilevatore non disponibile: ',copied:'Copiato!',copyError:'Copia non disponibile'})[key]||key;
 const metadataEntries=[];
 const input=document.querySelector('#file');
 const preview=document.querySelector('#preview');
