@@ -34,3 +34,4 @@ Per la verifica affidabile occorre:
 6. Per i video, introdurre campionamento frame, segnali temporali e metadati container; un classificatore di immagini da solo non basta.
 
 Non considerare le etichette di piattaforme aggregatrici come prova del modello sottostante.
+\n## Alpha 1.1 — Video Vision preliminare\nPer i video supportati dal browser, campiona tre fotogrammi a intervalli lungo la durata e calcola luminosità, contrasto e differenze locali tra pixel, senza upload. Non è un rilevatore di deepfake né identifica Veo/Kling/Seedance. File lunghi o codec incompatibili possono fallire; il browser deve decodificare il video. Per la verifica C2PA, il SDK ufficiale corrente è @contentauth/c2pa-web, non il pacchetto legacy. L'integrazione di verifica delle firme richiede ancora sviluppo e collaudo.\n
