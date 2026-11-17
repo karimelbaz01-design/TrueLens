@@ -18,7 +18,9 @@ async function inspectC2pa(file){
   const manifests=store.manifests||{};
   const manifest=manifests[active]||{};
   const state=store.validation_state||store.validationState||'Unknown';
-  const status=state==='Invalid'?'invalid':state==='Valid'?'valid-untrusted':state==='Trusted'?'trusted':'unknown';
+  // SDK versions may use a string or omit the state. Never promote an unknown value to trusted.
+  const normalized=String(state).toLowerCase();
+  const status=normalized==='invalid'?'invalid':normalized==='valid'?'valid-untrusted':normalized==='trusted'?'trusted':'unknown';
   return {status:'present',active:String(active),title:String(manifest.title||''),
    claimGenerator:String(manifest.claim_generator||''),validationState:status};
  }finally{await reader.free();}
