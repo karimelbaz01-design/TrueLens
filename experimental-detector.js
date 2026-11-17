@@ -52,6 +52,7 @@ async function runExperimentalDetector(file){
  // Decode locally and downscale to avoid huge source images.
  const bitmap=await decodeAiInput(file);
  try{
+  if(!Number.isFinite(bitmap.width)||!Number.isFinite(bitmap.height)||bitmap.width<=0||bitmap.height<=0)throw Error('Dimensioni immagine non valide');
   const canvas=document.createElement('canvas');
   const scale=Math.min(1,1024/Math.max(bitmap.width,bitmap.height));
   canvas.width=Math.max(1,Math.round(bitmap.width*scale));
