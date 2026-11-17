@@ -1,0 +1,10 @@
+{
+  "name": "TrueLens — Evidence Engine",
+  "short_name": "TrueLens",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090e19",
+  "theme_color": "#0b1020",
+  "description": "Analisi preliminare locale di foto e video"
+}
