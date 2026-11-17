@@ -3,7 +3,7 @@ const input=document.querySelector('#file');
 const preview=document.querySelector('#preview');
 const result=document.querySelector('#result');
 const details=document.querySelector('#details');
-const copyButton=document.querySelector('#copy');
+const copyButton=document.querySelector('#copy');\nconst aiButton=document.querySelector('#ai-test'),aiOutput=document.querySelector('#ai-output');
 let report='',previewUrl=null,requestId=0;
 const HASH_LIMIT=64*1024*1024;
 const METADATA_LIMIT=4*1024*1024;
@@ -22,7 +22,7 @@ input.addEventListener('change',async()=>{
  const file=input.files?.[0];if(!file)return;
  const id=++requestId;
  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
- result.style.display='block';preview.replaceChildren();details.replaceChildren();
+ result.style.display='block';aiButton.disabled=!file.type.startsWith('image/');aiOutput.textContent='';preview.replaceChildren();details.replaceChildren();
  metadataEntries.length=0;report='';copyButton.disabled=true;copyButton.textContent='Analisi in corso…';
  document.querySelector('#filename').textContent=file.name;
  document.querySelector('#verdict').textContent='Origine non determinabile: il rilevamento AI non è ancora disponibile.';
@@ -83,7 +83,7 @@ input.addEventListener('change',async()=>{
  if(!valid())return;
  updateReport(file);copyButton.disabled=false;copyButton.textContent='Copia rapporto';
 });
-copyButton.onclick=async()=>{
+aiButton.onclick=async()=>{\n const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;\n const id=requestId;aiButton.disabled=true;aiOutput.textContent='Caricamento del modello ed elaborazione sul dispositivo…';\n try{const values=await runExperimentalDetector(file);if(id!==requestId)return;\n  aiOutput.textContent='Risultati sperimentali non calibrati: '+values.map(v=>v.label+' '+(v.score*100).toFixed(1)+'%').join(' · ')+'. Non costituiscono una prova.';\n  row('AI Vision · modello sperimentale',values.map(v=>v.label+': '+v.score.toFixed(3)).join('; '));updateReport(file);\n }catch(e){if(id!==requestId)return;aiOutput.textContent='Rilevatore non disponibile: '+(e?.message||'errore sconosciuto');}\n finally{if(id===requestId)aiButton.disabled=false;}\n};\ncopyButton.onclick=async()=>{
  if(!report)return;
  try{await navigator.clipboard.writeText(report);copyButton.textContent='Copiato!';}
  catch{alert('Copia non disponibile in questo browser');}
