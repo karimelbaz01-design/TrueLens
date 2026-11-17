@@ -10,7 +10,16 @@ function originTrace(entries) {
   ['OpenAI / DALL-E',/dall[\s·-]*e|openai image/i],
   ['FLUX',/\bflux(?:\.1|\.2|\s+dev|\s+schnell)\b/i],
   ['Photoshop (editing software)',/adobe photoshop|photoshop/i],
-  ['GIMP (editing software)',/\bgimp\b/i]
+  ['GIMP (editing software)',/\bgimp\b/i],
+  ['Google Gemini / Imagen / Veo',/\b(?:google\s+)?(?:gemini|imagen\s*\d*|veo\s*\d+(?:\.\d+)?)\b/i],
+  ['Kling AI',/\bkling(?:\s*ai)?(?:\s*[34](?:\.\d+)?)?\b/i],
+  ['Seedance',/\bseedance(?:\s*\d+(?:\.\d+)?)?\b/i],
+  ['OpenAI Sora',/\bsora(?:\s*\d+(?:\.\d+)?)?\b/i],
+  ['Wan video models',/\bwan\s*(?:2(?:\.\d+)?|ai)\b/i],
+  ['MiniMax / Hailuo',/\bminimax\b|\bhailuo\b/i],
+  ['Luma Ray / Dream Machine',/\bluma\s*(?:ai|ray|dream machine)\b|\bray\s*3\b/i],
+  ['Krea (platform)',/\bkrea(?:\s*ai)?\b/i],
+  ['Creen AI (platform)',/\bcreen\s*ai\b/i]
  ];
  const found=[];
  for(const {key,value} of values){
