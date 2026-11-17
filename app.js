@@ -27,7 +27,7 @@ input.addEventListener('change',async()=>{
  result.style.display='block';c2paButton.disabled=false;c2paOutput.textContent='';aiButton.disabled=!file.type.startsWith('image/');aiOutput.textContent='';preview.replaceChildren();details.replaceChildren();
  metadataEntries.length=0;report='';copyButton.disabled=true;copyButton.textContent='Analisi in corso…';
  document.querySelector('#filename').textContent=file.name;
- document.querySelector('#verdict').textContent='Origine non determinabile: il rilevamento AI non è ancora disponibile.';
+ document.querySelector('#verdict').textContent='Analisi preliminare: origine non determinata. Per tentare il rilevamento AI, usa il pulsante sperimentale in fondo al rapporto.';
  document.querySelector('#notes').textContent='Analisi locale in corso…';
  const valid=()=>id===requestId;
  if(file.type.startsWith('image/')||file.type.startsWith('video/')){
@@ -83,6 +83,7 @@ input.addEventListener('change',async()=>{
   document.querySelector('#notes').textContent='Metadati e indizi sono modificabili; non certificano autenticità. Il controllo EXIF/PNG è limitato ai primi 4 MiB. SHA-256 identifica i byte, non la provenienza.';
  }catch(e){if(!valid())return;row('Errore analisi','File non elaborabile in questo browser');}
  if(!valid())return;
+ document.querySelector('#verdict').textContent=file.type.startsWith('image/')?'Analisi preliminare completata. Per una stima AI sperimentale, premi «Prova rilevatore AI sperimentale» qui sotto.':'Analisi preliminare completata. Rilevatore AI sperimentale disponibile solo per le immagini.';
  updateReport(file);copyButton.disabled=false;copyButton.textContent='Copia rapporto';
 });
 c2paButton.onclick=async()=>{
@@ -99,6 +100,7 @@ aiButton.onclick=async()=>{
  const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;
  const id=requestId;aiButton.disabled=true;aiOutput.textContent='Caricamento del modello ed elaborazione sul dispositivo…';
  try{const assessment=await runExperimentalDetector(file);if(id!==requestId)return;
+  document.querySelector('#verdict').textContent=assessment.label+' (stima sperimentale, non prova di autenticità).';
   aiOutput.textContent=assessment.label+'. Punteggi interni non calibrati: AI '+(assessment.fakeScore*100).toFixed(1)+'%, fotografica '+(assessment.realScore*100).toFixed(1)+'%. Non costituiscono una prova e non identificano il generatore.';
   row('AI Vision · valutazione',assessment.label);
   row('AI Vision · score non calibrati','AI '+assessment.fakeScore.toFixed(3)+'; fotografica '+assessment.realScore.toFixed(3));
