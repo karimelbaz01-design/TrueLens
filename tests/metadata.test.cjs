@@ -20,4 +20,8 @@ assert.equal(run("inspectSignature(new Uint8Array([255,216,255,0]).buffer,'image
 const pixels=new Uint8Array([0,0,0,255,255,255,255,255,0,0,0,255,255,255,255,255]);ctx.pixels=pixels;
 assert.equal(run("measurePixels(pixels,2,2).brightness"),128);
 assert.equal(run("measurePixels(pixels,2,2).contrast"),127.5);
+assert.equal(run("originTrace([['PNG: Software','Google Veo 3.1']])[0].name"),'Google Gemini / Imagen / Veo');
+assert.equal(run("originTrace([['PNG: Comment','Seedance 2.5']])[0].name"),'Seedance');
+assert.equal(run("originTrace([['PNG: Comment','Kling 4.0']])[0].name"),'Kling AI');
+assert.equal(run("originTrace([['PNG: Software','Krea AI']])[0].name"),'Krea (platform)');
 console.log('TrueLens metadata and vision tests passed');
