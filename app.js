@@ -3,7 +3,8 @@ const input=document.querySelector('#file');
 const preview=document.querySelector('#preview');
 const result=document.querySelector('#result');
 const details=document.querySelector('#details');
-const copyButton=document.querySelector('#copy');\nconst aiButton=document.querySelector('#ai-test'),aiOutput=document.querySelector('#ai-output');
+const copyButton=document.querySelector('#copy');
+const c2paButton=document.querySelector('#c2pa-test'),c2paOutput=document.querySelector('#c2pa-output');\nconst aiButton=document.querySelector('#ai-test'),aiOutput=document.querySelector('#ai-output');
 let report='',previewUrl=null,requestId=0;
 const HASH_LIMIT=64*1024*1024;
 const METADATA_LIMIT=4*1024*1024;
@@ -22,7 +23,7 @@ input.addEventListener('change',async()=>{
  const file=input.files?.[0];if(!file)return;
  const id=++requestId;
  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
- result.style.display='block';aiButton.disabled=!file.type.startsWith('image/');aiOutput.textContent='';preview.replaceChildren();details.replaceChildren();
+ result.style.display='block';c2paButton.disabled=false;c2paOutput.textContent='';aiButton.disabled=!file.type.startsWith('image/');aiOutput.textContent='';preview.replaceChildren();details.replaceChildren();
  metadataEntries.length=0;report='';copyButton.disabled=true;copyButton.textContent='Analisi in corso…';
  document.querySelector('#filename').textContent=file.name;
  document.querySelector('#verdict').textContent='Origine non determinabile: il rilevamento AI non è ancora disponibile.';
@@ -83,7 +84,25 @@ input.addEventListener('change',async()=>{
  if(!valid())return;
  updateReport(file);copyButton.disabled=false;copyButton.textContent='Copia rapporto';
 });
-aiButton.onclick=async()=>{\n const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;\n const id=requestId;aiButton.disabled=true;aiOutput.textContent='Caricamento del modello ed elaborazione sul dispositivo…';\n try{const values=await runExperimentalDetector(file);if(id!==requestId)return;\n  aiOutput.textContent='Risultati sperimentali non calibrati: '+values.map(v=>v.label+' '+(v.score*100).toFixed(1)+'%').join(' · ')+'. Non costituiscono una prova.';\n  row('AI Vision · modello sperimentale',values.map(v=>v.label+': '+v.score.toFixed(3)).join('; '));updateReport(file);\n }catch(e){if(id!==requestId)return;aiOutput.textContent='Rilevatore non disponibile: '+(e?.message||'errore sconosciuto');}\n finally{if(id===requestId)aiButton.disabled=false;}\n};\ncopyButton.onclick=async()=>{
+c2paButton.onclick=async()=>{
+ const file=input.files?.[0];if(!file)return;
+ const id=requestId;c2paButton.disabled=true;c2paOutput.textContent='Lettura C2PA in corso…';
+ try{const info=await inspectC2pa(file);if(id!==requestId)return;
+  if(info.status==='absent'){c2paOutput.textContent='Nessun manifesto C2PA rilevato. Non dimostra autenticità.';row('C2PA','Manifesto assente');}
+  else {c2paOutput.textContent='Manifesto rilevato. Attendibilità della firma NON verificata.';row('C2PA · manifest',info.active||'Presente');if(info.claimGenerator)row('C2PA · software dichiarato',info.claimGenerator);if(info.title)row('C2PA · titolo',info.title);row('C2PA · fiducia','Non verificata');}
+  updateReport(file);
+ }catch(e){if(id!==requestId)return;c2paOutput.textContent='Lettura non disponibile: '+(e?.message||'errore');}
+ finally{if(id===requestId)c2paButton.disabled=false;}
+};
+aiButton.onclick=async()=>{
+ const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;
+ const id=requestId;aiButton.disabled=true;aiOutput.textContent='Caricamento del modello ed elaborazione sul dispositivo…';
+ try{const values=await runExperimentalDetector(file);if(id!==requestId)return;
+  aiOutput.textContent='Risultati sperimentali non calibrati: '+values.map(v=>v.label+' '+(v.score*100).toFixed(1)+'%').join(' · ')+'. Non costituiscono una prova.';
+  row('AI Vision · modello sperimentale',values.map(v=>v.label+': '+v.score.toFixed(3)).join('; '));updateReport(file);
+ }catch(e){if(id!==requestId)return;aiOutput.textContent='Rilevatore non disponibile: '+(e?.message||'errore sconosciuto');}
+ finally{if(id===requestId)aiButton.disabled=false;}
+};\ncopyButton.onclick=async()=>{
  if(!report)return;
  try{await navigator.clipboard.writeText(report);copyButton.textContent='Copiato!';}
  catch{alert('Copia non disponibile in questo browser');}
