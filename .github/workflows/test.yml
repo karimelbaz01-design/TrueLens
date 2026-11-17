@@ -16,6 +16,14 @@ jobs:
           node-version: '22'
       - run: node --check app.js && node --check metadata.js && node --check png-metadata.js && node --check origin-trace.js && node --check signature.js && node --check vision.js && node --check ai-evaluation.js && node --check experimental-detector.js && node --check video-vision.js && node --check c2pa-inspector.js
       - run: node tests/metadata.test.cjs && node tests/ai-evaluation.test.cjs && node tests/c2pa.test.cjs && node tests/integration.test.cjs && node tests/ai-detector.test.cjs
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Browser smoke test
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/truelens-server.log 2>&1 &
+          node tests/browser-smoke.cjs
       - name: Save testable source snapshot
         if: always()
         uses: actions/upload-artifact@v4
