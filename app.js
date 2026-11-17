@@ -87,7 +87,7 @@ input.addEventListener('change',async()=>{
  }catch(e){if(!valid())return;row('Errore analisi','File non elaborabile in questo browser');}
  if(!valid())return;
  document.querySelector('#verdict').textContent=tl(file.type.startsWith('image/')?'done':'doneVideo');
- const uploadStatus=document.querySelector('#upload-status');if(uploadStatus)uploadStatus.textContent='Analisi completata: '+file.name;
+ if(uploadStatus)uploadStatus.textContent='Analisi completata: '+file.name;
  updateReport(file);copyButton.disabled=false;copyButton.textContent=tl('copy');
 });
 c2paButton.onclick=async()=>{
