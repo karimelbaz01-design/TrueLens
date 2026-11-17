@@ -21,6 +21,7 @@ const TL_COPY={
   modelResult:'Experimental model output',scores:'Uncalibrated raw scores (NOT authenticity probabilities)',
   aiClass:'AI class',photoClass:'photographic class',
   warning:'Metadata and model scores can be incorrect or manipulated.',
+  unvalidated:'This model has produced false positives on genuine phone photos. Its raw scores are intentionally hidden until independent validation.',
   modelUnavailable:'Detector unavailable: ',
   copied:'Copied!',copyError:'Copy unavailable in this browser'
  },
@@ -43,6 +44,7 @@ const TL_COPY={
   modelResult:'Risultato del modello sperimentale',scores:'Score grezzi non calibrati (NON probabilità di autenticità)',
   aiClass:'classe AI',photoClass:'classe fotografica',
   warning:'Metadati e punteggi possono essere errati o manipolati.',
+  unvalidated:'Questo modello ha prodotto falsi positivi su foto autentiche da smartphone. I punteggi grezzi sono nascosti fino a una validazione indipendente.',
   modelUnavailable:'Rilevatore non disponibile: ',
   copied:'Copiato!',copyError:'Copia non disponibile in questo browser'
  }
