@@ -5,6 +5,9 @@ const js=fs.readFileSync('app.js','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 const scripts=[...html.matchAll(/<script\s+src="\.\/([^"]+)"/g)].map(m=>m[1]);
 assert.ok(scripts.includes('app.js'),'app.js must load');
+assert.ok(scripts.includes('i18n.js'),'translations must load');
+assert.ok(scripts.indexOf('i18n.js')<scripts.indexOf('app.js'),'translations must load before app');
+assert.ok(html.includes('id="tl-language"'),'language selector missing');
 assert.ok(scripts.includes('c2pa-inspector.js'),'C2PA script must load');
 assert.ok(scripts.indexOf('c2pa-inspector.js')<scripts.indexOf('app.js'),'C2PA must load before app');
 for(const path of scripts){
