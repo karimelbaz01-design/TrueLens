@@ -5,7 +5,7 @@ Prototipo gratuito di analisi preliminare locale per immagini e video.
 ## Funzioni attuali
 - Selezione e anteprima di file compatibili col browser
 - Tipo MIME, dimensione e data di modifica
-- Controllo firma binaria del file e confronto con MIME dichiarato\n- Origin Trace: indizi testuali dichiarati nei metadati (non attribuzione verificata)\n- Lettura locale e limitata di metadati PNG tEXt/iTXt non compressi\n- Lettura limitata e locale di tag EXIF JPEG (produttore, modello, software, data), se presenti\n- SHA-256 del file tramite Web Crypto
+- AI Vision (fase 1): misure visive locali di luminosità, contrasto e differenze tra pixel; NON è un classificatore AI\n- Controllo firma binaria del file e confronto con MIME dichiarato\n- Origin Trace: indizi testuali dichiarati nei metadati (non attribuzione verificata)\n- Lettura locale e limitata di metadati PNG tEXt/iTXt non compressi\n- Lettura limitata e locale di tag EXIF JPEG (produttore, modello, software, data), se presenti\n- SHA-256 del file tramite Web Crypto
 - Rapporto copiabile
 - PWA con service worker
 
