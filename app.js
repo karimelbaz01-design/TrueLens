@@ -24,6 +24,7 @@ function updateReport(file){
 }
 input.addEventListener('change',async()=>{
  const file=input.files?.[0];if(!file)return;
+ const uploadStatus=document.querySelector('#upload-status');if(uploadStatus)uploadStatus.textContent='File selezionato: '+file.name;
  const id=++requestId;
  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
  result.style.display='block';c2paButton.disabled=false;c2paOutput.textContent='';aiButton.disabled=!file.type.startsWith('image/');aiOutput.textContent='';preview.replaceChildren();details.replaceChildren();
@@ -86,6 +87,7 @@ input.addEventListener('change',async()=>{
  }catch(e){if(!valid())return;row('Errore analisi','File non elaborabile in questo browser');}
  if(!valid())return;
  document.querySelector('#verdict').textContent=tl(file.type.startsWith('image/')?'done':'doneVideo');
+ const uploadStatus=document.querySelector('#upload-status');if(uploadStatus)uploadStatus.textContent='Analisi completata: '+file.name;
  updateReport(file);copyButton.disabled=false;copyButton.textContent=tl('copy');
 });
 c2paButton.onclick=async()=>{
@@ -120,4 +122,4 @@ copyButton.onclick=async()=>{
  try{await navigator.clipboard.writeText(report);copyButton.textContent=tl('copied');}
  catch{alert(tl('copyError'));}
 };
-if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+// Service worker disabled until cache consistency is verified on iOS Safari.
