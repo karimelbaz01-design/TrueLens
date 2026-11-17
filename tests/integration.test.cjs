@@ -15,4 +15,6 @@ for(const id of ['file','preview','result','details','copy','ai-test','ai-output
  assert.ok(html.includes('id="'+id+'"'),'missing UI element '+id);
 }
 assert.ok(!js.includes('};\\ncopyButton'),'literal escaped newline must not break app');
+assert.ok(js.includes('Produttore|Modello'),'camera conflict detection must recognize actual EXIF labels');
+assert.ok(js.includes('Origine non determinabile: classificazione sperimentale non convalidata.'),'unvalidated model must not produce definitive verdict');
 console.log('HTML, scripts, UI and cache integration checks passed');
