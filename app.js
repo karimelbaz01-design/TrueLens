@@ -103,7 +103,8 @@ aiButton.onclick=async()=>{
   row('AI Vision · modello sperimentale',values.map(v=>v.label+': '+v.score.toFixed(3)).join('; '));updateReport(file);
  }catch(e){if(id!==requestId)return;aiOutput.textContent='Rilevatore non disponibile: '+(e?.message||'errore sconosciuto');}
  finally{if(id===requestId)aiButton.disabled=false;}
-};\ncopyButton.onclick=async()=>{
+};
+copyButton.onclick=async()=>{
  if(!report)return;
  try{await navigator.clipboard.writeText(report);copyButton.textContent='Copiato!';}
  catch{alert('Copia non disponibile in questo browser');}
