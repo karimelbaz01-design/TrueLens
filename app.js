@@ -100,8 +100,12 @@ aiButton.onclick=async()=>{
  const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;
  const id=requestId;aiButton.disabled=true;aiOutput.textContent='Caricamento del modello ed elaborazione sul dispositivo…';
  try{const assessment=await runExperimentalDetector(file);if(id!==requestId)return;
-  document.querySelector('#verdict').textContent=assessment.label+' (stima sperimentale, non prova di autenticità).';
-  aiOutput.textContent=assessment.label+'. Punteggi interni non calibrati: AI '+(assessment.fakeScore*100).toFixed(1)+'%, fotografica '+(assessment.realScore*100).toFixed(1)+'%. Non costituiscono una prova e non identificano il generatore.';
+  const cameraMetadata=metadataEntries.some(([key,value])=>/^(EXIF: )?(Make|Model|Camera Make|Camera Model|Marca|Modello|Fotocamera)$/i.test(key.trim())&&value.trim().length>1);
+  const conflict=cameraMetadata&&assessment.fakeScore>=.85;
+  const interpretation=conflict?'Risultati discordanti: il modello segnala la classe AI, ma il file contiene metadati fotografici. Origine non determinabile.':'Origine non determinabile: classificazione sperimentale non convalidata.';
+  document.querySelector('#verdict').textContent=interpretation;
+  row('AI Vision · interpretazione',interpretation);
+  aiOutput.textContent=interpretation+' Risultato del modello: '+assessment.label+'. Score grezzi NON calibrati (non probabilità di autenticità): classe AI +(assessment.fakeScore*100).toFixed(1)+'%, classe fotografica '+(assessment.realScore*100).toFixed(1)+'%. Metadati e punteggi possono essere errati o manipolati.';
   row('AI Vision · valutazione',assessment.label);
   row('AI Vision · score non calibrati','AI '+assessment.fakeScore.toFixed(3)+'; fotografica '+assessment.realScore.toFixed(3));
   row('AI Vision · attendibilità','Non validato sui generatori recenti; nessuna attribuzione');
