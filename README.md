@@ -1,0 +1,23 @@
+# TrueLens — Evidence Engine
+
+Prototipo gratuito di analisi preliminare locale per immagini e video.
+
+## Funzioni attuali
+- Selezione e anteprima di file compatibili col browser
+- Tipo MIME, dimensione e data di modifica
+- SHA-256 del file tramite Web Crypto
+- Rapporto copiabile
+- PWA con service worker
+
+**Non implementato:** rilevamento AI, riconoscimento generatore, analisi Photoshop, verifica C2PA, deepfake. Non confondere i metadati con una prova di autenticità.
+
+## Esecuzione
+Apri la pagina tramite un server HTTPS o localhost. Su GitHub Pages puoi aggiungerla alla schermata Home del telefono.
+
+## Roadmap
+1. Parser EXIF e C2PA validati
+2. Modello locale di classificazione AI con benchmark e incertezza
+3. Analisi di fotogrammi video
+4. Packaging Android
+
+Licenza da definire prima di distribuire contributi esterni.
