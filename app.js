@@ -90,7 +90,7 @@ c2paButton.onclick=async()=>{
  const id=requestId;c2paButton.disabled=true;c2paOutput.textContent='Lettura C2PA in corso…';
  try{const info=await inspectC2pa(file);if(id!==requestId)return;
   if(info.status==='absent'){c2paOutput.textContent='Nessun manifesto C2PA rilevato. Non dimostra autenticità.';row('C2PA','Manifesto assente');}
-  else {c2paOutput.textContent='Manifesto rilevato. Attendibilità della firma NON verificata.';row('C2PA · manifest',info.active||'Presente');if(info.claimGenerator)row('C2PA · software dichiarato',info.claimGenerator);if(info.title)row('C2PA · titolo',info.title);row('C2PA · fiducia','Non verificata');}
+  else {c2paOutput.textContent='Manifesto rilevato. Attendibilità della firma NON verificata.';row('C2PA · manifest',info.active||'Presente');if(info.claimGenerator)row('C2PA · software dichiarato',info.claimGenerator);if(info.title)row('C2PA · titolo',info.title);row('C2PA · validazione',info.validationState==='invalid'?'Non valida':info.validationState==='valid-untrusted'?'Firma valida, firmatario non attendibile':info.validationState==='trusted'?'Attendibile secondo SDK': 'Non determinabile');}
   updateReport(file);
  }catch(e){if(id!==requestId)return;c2paOutput.textContent='Lettura non disponibile: '+(e?.message||'errore');}
  finally{if(id===requestId)c2paButton.disabled=false;}
