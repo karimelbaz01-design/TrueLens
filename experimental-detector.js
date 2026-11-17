@@ -20,6 +20,23 @@ function interpretAiScores(outputs){
   real>=.85?'Segnale sperimentale favorevole alla classe fotografica':'Risultato incerto';
  return {label,fakeScore:fake,realScore:real,calibrated:false,verified:false};
 }
+async function decodeAiInput(file){
+ if(typeof createImageBitmap==='function'){
+  const bitmap=await createImageBitmap(file);
+  return {width:bitmap.width,height:bitmap.height,draw:(ctx,w,h)=>ctx.drawImage(bitmap,0,0,w,h),close:()=>bitmap.close()};
+ }
+ // Safari fallback for versions where createImageBitmap is unavailable.
+ const url=URL.createObjectURL(file);
+ const image=new Image();
+ try{
+  await new Promise((resolve,reject)=>{
+   image.onload=resolve;
+   image.onerror=()=>reject(Error('Immagine non decodificabile'));
+   image.src=url;
+  });
+  return {width:image.naturalWidth,height:image.naturalHeight,draw:(ctx,w,h)=>ctx.drawImage(image,0,0,w,h),close:()=>URL.revokeObjectURL(url)};
+ }catch(e){URL.revokeObjectURL(url);throw e;}
+}
 async function runExperimentalDetector(file){
  if(!file||!file.type.startsWith('image/'))throw Error('Seleziona un’immagine.');
  if(file.size>20*1024*1024)throw Error('Immagine troppo grande (max 20 MiB).');
@@ -33,7 +50,7 @@ async function runExperimentalDetector(file){
  }
  const {classifier,RawImage}=await experimentalPipelinePromise;
  // Decode locally and downscale to avoid huge source images.
- const bitmap=await createImageBitmap(file);
+ const bitmap=await decodeAiInput(file);
  try{
   const canvas=document.createElement('canvas');
   const scale=Math.min(1,1024/Math.max(bitmap.width,bitmap.height));
@@ -41,7 +58,7 @@ async function runExperimentalDetector(file){
   canvas.height=Math.max(1,Math.round(bitmap.height*scale));
   const ctx=canvas.getContext('2d');
   if(!ctx)throw Error('Canvas non disponibile');
-  ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
+  bitmap.draw(ctx,canvas.width,canvas.height);
   const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Impossibile elaborare l’immagine')),'image/png'));
   const decoded=await RawImage.fromBlob(blob);
   const outputs=await classifier(decoded,{top_k:2});
