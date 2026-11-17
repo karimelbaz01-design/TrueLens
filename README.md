@@ -5,7 +5,7 @@ Prototipo gratuito di analisi preliminare locale per immagini e video.
 ## Funzioni attuali
 - Selezione e anteprima di file compatibili col browser
 - Tipo MIME, dimensione e data di modifica
-- SHA-256 del file tramite Web Crypto
+- Lettura limitata e locale di tag EXIF JPEG (produttore, modello, software, data), se presenti\n- SHA-256 del file tramite Web Crypto
 - Rapporto copiabile
 - PWA con service worker
 
@@ -15,7 +15,7 @@ Prototipo gratuito di analisi preliminare locale per immagini e video.
 Apri la pagina tramite un server HTTPS o localhost. Su GitHub Pages puoi aggiungerla alla schermata Home del telefono.
 
 ## Roadmap
-1. Parser EXIF e C2PA validati
+1. Verifica C2PA e parser EXIF più completi
 2. Modello locale di classificazione AI con benchmark e incertezza
 3. Analisi di fotogrammi video
 4. Packaging Android
