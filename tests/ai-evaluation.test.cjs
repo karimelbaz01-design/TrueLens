@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const ctx=vm.createContext({});
+vm.runInContext(fs.readFileSync('ai-evaluation.js','utf8'),ctx);
+const run=expr=>vm.runInContext(expr,ctx);
+const metrics=run("evaluateDetector([{label:1,score:.9},{label:1,score:.1},{label:0,score:.8},{label:0,score:.2}])");
+assert.equal(metrics.tp,1);assert.equal(metrics.fn,1);
+assert.equal(metrics.fp,1);assert.equal(metrics.tn,1);
+assert.equal(metrics.accuracy,.5);assert.equal(metrics.falsePositiveRate,.5);
+assert.equal(run("canEnableDetector({validated:false,modelId:'demo',evaluationSize:100,falsePositiveRate:0,falseNegativeRate:0})"),false);
+assert.equal(run("canEnableDetector({validated:true,modelId:'demo',evaluationSize:4,falsePositiveRate:0,falseNegativeRate:0})"),false);
+assert.throws(()=>run("evaluateDetector([{label:1,score:2}])"));
+console.log('AI evaluation guardrail tests passed');
