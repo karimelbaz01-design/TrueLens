@@ -104,15 +104,13 @@ aiButton.onclick=async()=>{
  const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;
  const id=requestId;aiButton.disabled=true;aiOutput.textContent=tl('aiLoading');
  try{const assessment=await runExperimentalDetector(file);if(id!==requestId)return;
-  const cameraMetadata=metadataEntries.some(([key,value])=>/^(EXIF: )?(Make|Model|Camera Make|Camera Model|Marca|Produttore|Modello|Fotocamera)$/i.test(key.trim())&&value.trim().length>1);
-  const conflict=cameraMetadata&&assessment.fakeScore>=.85;
-  const interpretation=tl(conflict?'conflict':'uncertain');
+  // The current model is not benchmarked on recent real-world camera photos.
+  // Never expose its softmax output as an authenticity percentage or verdict.
+  const interpretation=tl('uncertain');
   document.querySelector('#verdict').textContent=interpretation;
   row('AI Vision · interpretazione',interpretation);
-  aiOutput.textContent=interpretation+' '+tl('modelResult')+': '+assessment.label+'. '+tl('scores')+': '+tl('aiClass')+' '+(assessment.fakeScore*100).toFixed(1)+'%, '+tl('photoClass')+' '+(assessment.realScore*100).toFixed(1)+'%. '+tl('warning');
-  row('AI Vision · valutazione',assessment.label+' (non verificata)');
-  row('AI Vision · score non calibrati','Classe AI '+assessment.fakeScore.toFixed(3)+'; classe fotografica '+assessment.realScore.toFixed(3)+' (non probabilità)');
-  row('AI Vision · attendibilità','Non validato sui generatori recenti; nessuna attribuzione');
+  aiOutput.textContent=interpretation+' '+(tl('unvalidated')||'')+' '+tl('warning');
+  row('AI Vision · stato','Modello eseguito; classificazione non convalidata');
   updateReport(file);
  }catch(e){if(id!==requestId)return;aiOutput.textContent=tl('modelUnavailable')+(e?.message||'errore sconosciuto');}
  finally{if(id===requestId)aiButton.disabled=false;}
