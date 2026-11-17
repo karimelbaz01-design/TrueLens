@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const ctx=vm.createContext({});
+vm.runInContext(fs.readFileSync('c2pa-inspector.js','utf8'),ctx);
+const check=s=>vm.runInContext('c2paValidationLabel('+JSON.stringify(s)+')',ctx);
+assert.equal(check('Invalid'),'invalid');
+assert.equal(check(' valid '),'valid-untrusted');
+assert.equal(check('Trusted'),'unknown');
+assert.equal(check('UNKNOWN'),'unknown');
+assert.equal(check(null),'unknown');
+assert.equal(check({value:'Trusted'}),'unknown');
+console.log('C2PA trust-label guardrail tests passed');
