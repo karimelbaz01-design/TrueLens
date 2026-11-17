@@ -98,9 +98,12 @@ c2paButton.onclick=async()=>{
 aiButton.onclick=async()=>{
  const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;
  const id=requestId;aiButton.disabled=true;aiOutput.textContent='Caricamento del modello ed elaborazione sul dispositivo…';
- try{const values=await runExperimentalDetector(file);if(id!==requestId)return;
-  aiOutput.textContent='Risultati sperimentali non calibrati: '+values.map(v=>v.label+' '+(v.score*100).toFixed(1)+'%').join(' · ')+'. Non costituiscono una prova.';
-  row('AI Vision · modello sperimentale',values.map(v=>v.label+': '+v.score.toFixed(3)).join('; '));updateReport(file);
+ try{const assessment=await runExperimentalDetector(file);if(id!==requestId)return;
+  aiOutput.textContent=assessment.label+'. Punteggi interni non calibrati: AI '+(assessment.fakeScore*100).toFixed(1)+'%, fotografica '+(assessment.realScore*100).toFixed(1)+'%. Non costituiscono una prova e non identificano il generatore.';
+  row('AI Vision · valutazione',assessment.label);
+  row('AI Vision · score non calibrati','AI '+assessment.fakeScore.toFixed(3)+'; fotografica '+assessment.realScore.toFixed(3));
+  row('AI Vision · attendibilità','Non validato sui generatori recenti; nessuna attribuzione');
+  updateReport(file);
  }catch(e){if(id!==requestId)return;aiOutput.textContent='Rilevatore non disponibile: '+(e?.message||'errore sconosciuto');}
  finally{if(id===requestId)aiButton.disabled=false;}
 };
