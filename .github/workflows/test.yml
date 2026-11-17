@@ -14,4 +14,4 @@ jobs:
         with:
           node-version: '22'
       - run: node --check app.js && node --check metadata.js && node --check png-metadata.js && node --check origin-trace.js && node --check signature.js && node --check vision.js && node --check ai-evaluation.js && node --check experimental-detector.js && node --check video-vision.js && node --check c2pa-inspector.js
-      - run: node tests/metadata.test.cjs && node tests/ai-evaluation.test.cjs && node tests/c2pa.test.cjs
+      - run: node tests/metadata.test.cjs && node tests/ai-evaluation.test.cjs && node tests/c2pa.test.cjs && node tests/integration.test.cjs
