@@ -5,7 +5,7 @@ Prototipo gratuito di analisi preliminare locale per immagini e video.
 ## Funzioni attuali
 - Selezione e anteprima di file compatibili col browser
 - Tipo MIME, dimensione e data di modifica
-- Lettura limitata e locale di tag EXIF JPEG (produttore, modello, software, data), se presenti\n- SHA-256 del file tramite Web Crypto
+- Lettura locale e limitata di metadati PNG tEXt/iTXt non compressi\n- Lettura limitata e locale di tag EXIF JPEG (produttore, modello, software, data), se presenti\n- SHA-256 del file tramite Web Crypto
 - Rapporto copiabile
 - PWA con service worker
 
