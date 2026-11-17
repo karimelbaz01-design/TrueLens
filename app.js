@@ -25,9 +25,9 @@ input.addEventListener('change',async()=>{
  const id=++requestId;
  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
  result.style.display='block';c2paButton.disabled=false;c2paOutput.textContent='';aiButton.disabled=!file.type.startsWith('image/');aiOutput.textContent='';preview.replaceChildren();details.replaceChildren();
- metadataEntries.length=0;report='';copyButton.disabled=true;copyButton.textContent='Analisi in corso…';
+ metadataEntries.length=0;report='';copyButton.disabled=true;copyButton.textContent=tl('loading');
  document.querySelector('#filename').textContent=file.name;
- document.querySelector('#verdict').textContent='Analisi preliminare: origine non determinata. Per tentare il rilevamento AI, usa il pulsante sperimentale in fondo al rapporto.';
+ document.querySelector('#verdict').textContent=tl('pending');
  document.querySelector('#notes').textContent='Analisi locale in corso…';
  const valid=()=>id===requestId;
  if(file.type.startsWith('image/')||file.type.startsWith('video/')){
@@ -83,8 +83,8 @@ input.addEventListener('change',async()=>{
   document.querySelector('#notes').textContent='Metadati e indizi sono modificabili; non certificano autenticità. Il controllo EXIF/PNG è limitato ai primi 4 MiB. SHA-256 identifica i byte, non la provenienza.';
  }catch(e){if(!valid())return;row('Errore analisi','File non elaborabile in questo browser');}
  if(!valid())return;
- document.querySelector('#verdict').textContent=file.type.startsWith('image/')?'Analisi preliminare completata. Per una stima AI sperimentale, premi «Prova rilevatore AI sperimentale» qui sotto.':'Analisi preliminare completata. Rilevatore AI sperimentale disponibile solo per le immagini.';
- updateReport(file);copyButton.disabled=false;copyButton.textContent='Copia rapporto';
+ document.querySelector('#verdict').textContent=tl(file.type.startsWith('image/')?'done':'doneVideo');
+ updateReport(file);copyButton.disabled=false;copyButton.textContent=tl('copy');
 });
 c2paButton.onclick=async()=>{
  const file=input.files?.[0];if(!file)return;
@@ -98,24 +98,24 @@ c2paButton.onclick=async()=>{
 };
 aiButton.onclick=async()=>{
  const file=input.files?.[0];if(!file||!file.type.startsWith('image/'))return;
- const id=requestId;aiButton.disabled=true;aiOutput.textContent='Caricamento del modello ed elaborazione sul dispositivo…';
+ const id=requestId;aiButton.disabled=true;aiOutput.textContent=tl('aiLoading');
  try{const assessment=await runExperimentalDetector(file);if(id!==requestId)return;
   const cameraMetadata=metadataEntries.some(([key,value])=>/^(EXIF: )?(Make|Model|Camera Make|Camera Model|Marca|Produttore|Modello|Fotocamera)$/i.test(key.trim())&&value.trim().length>1);
   const conflict=cameraMetadata&&assessment.fakeScore>=.85;
-  const interpretation=conflict?'Risultati discordanti: il modello segnala la classe AI, ma il file contiene metadati fotografici. Origine non determinabile.':'Origine non determinabile: classificazione sperimentale non convalidata.';
+  const interpretation=tl(conflict?'conflict':'uncertain');
   document.querySelector('#verdict').textContent=interpretation;
   row('AI Vision · interpretazione',interpretation);
-  aiOutput.textContent=interpretation+' Risultato del modello: '+assessment.label+'. Score grezzi NON calibrati (non probabilità di autenticità): classe AI +(assessment.fakeScore*100).toFixed(1)+'%, classe fotografica '+(assessment.realScore*100).toFixed(1)+'%. Metadati e punteggi possono essere errati o manipolati.';
+  aiOutput.textContent=interpretation+' '+tl('modelResult')+': '+assessment.label+'. '+tl('scores')+': '+tl('aiClass')+' '+(assessment.fakeScore*100).toFixed(1)+'%, '+tl('photoClass')+' '+(assessment.realScore*100).toFixed(1)+'%. '+tl('warning');
   row('AI Vision · valutazione',assessment.label+' (non verificata)');
   row('AI Vision · score non calibrati','Classe AI '+assessment.fakeScore.toFixed(3)+'; classe fotografica '+assessment.realScore.toFixed(3)+' (non probabilità)');
   row('AI Vision · attendibilità','Non validato sui generatori recenti; nessuna attribuzione');
   updateReport(file);
- }catch(e){if(id!==requestId)return;aiOutput.textContent='Rilevatore non disponibile: '+(e?.message||'errore sconosciuto');}
+ }catch(e){if(id!==requestId)return;aiOutput.textContent=tl('modelUnavailable')+(e?.message||'errore sconosciuto');}
  finally{if(id===requestId)aiButton.disabled=false;}
 };
 copyButton.onclick=async()=>{
  if(!report)return;
- try{await navigator.clipboard.writeText(report);copyButton.textContent='Copiato!';}
- catch{alert('Copia non disponibile in questo browser');}
+ try{await navigator.clipboard.writeText(report);copyButton.textContent=tl('copied');}
+ catch{alert(tl('copyError'));}
 };
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
