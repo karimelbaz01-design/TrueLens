@@ -35,3 +35,5 @@ Per la verifica affidabile occorre:
 
 Non considerare le etichette di piattaforme aggregatrici come prova del modello sottostante.
 \n## Alpha 1.1 — Video Vision preliminare\nPer i video supportati dal browser, campiona tre fotogrammi a intervalli lungo la durata e calcola luminosità, contrasto e differenze locali tra pixel, senza upload. Non è un rilevatore di deepfake né identifica Veo/Kling/Seedance. File lunghi o codec incompatibili possono fallire; il browser deve decodificare il video. Per la verifica C2PA, il SDK ufficiale corrente è @contentauth/c2pa-web, non il pacchetto legacy. L'integrazione di verifica delle firme richiede ancora sviluppo e collaudo.\n
+## Alpha 1.2 — C2PA sperimentale
+Pulsante facoltativo per tentare la lettura di manifest C2PA con @contentauth/c2pa-web 0.15.4 in browser. Nessuna catena di fiducia è configurata: **manifest presente non equivale a firma valida**. Il caricamento CDN ESM e la compatibilità Safari/Android devono essere collaudati.
