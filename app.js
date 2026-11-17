@@ -64,7 +64,7 @@ input.addEventListener('change',async()=>{
     row('AI Vision · nota','Misure descrittive, NON probabilità di generazione AI');
    }else row('AI Vision','Analisi visiva non disponibile');
   }
-  row('Tipo MIME',file.type||'Non dichiarato');
+  if(file.type.startsWith('video/')){const videoAnalysis=await inspectVideoFrames(file);if(!valid())return;if(videoAnalysis.status==='ok'){row('Video Vision · risoluzione',videoAnalysis.width+' × '+videoAnalysis.height);row('Video Vision · frame campionati',videoAnalysis.frames.length);for(const frame of videoAnalysis.frames)row('Frame '+frame.time+'s','luminosità '+frame.brightness+', contrasto '+frame.contrast+', differenza pixel '+frame.edgeDifference);row('Video Vision · nota','Statistiche descrittive, NON rilevamento deepfake')}else row('Video Vision','Non disponibile: '+(videoAnalysis.reason||'formato non supportato'));}row('Tipo MIME',file.type||'Non dichiarato');
   row('Dimensione',new Intl.NumberFormat('it-IT').format(file.size)+' byte');
   row('Ultima modifica',new Date(file.lastModified).toLocaleString('it-IT'));
   if(file.size>HASH_LIMIT){
