@@ -25,13 +25,13 @@ async function runExperimentalDetector(file){
  if(file.size>20*1024*1024)throw Error('Immagine troppo grande (max 20 MiB).');
  if(!experimentalPipelinePromise){
   experimentalPipelinePromise=import('https://esm.sh/@huggingface/transformers@3.8.1')
-   .then(({pipeline,env})=>{
+   .then(({pipeline,env,RawImage})=>{
     env.allowLocalModels=false;
     // Explicit 8-bit quantization lowers memory pressure on mobile devices.
-    return pipeline('image-classification',EXPERIMENTAL_MODEL,{device:'wasm',dtype:EXPERIMENTAL_MODEL_VARIANT});
+    return pipeline('image-classification',EXPERIMENTAL_MODEL,{device:'wasm',dtype:EXPERIMENTAL_MODEL_VARIANT}).then(classifier=>({classifier,RawImage}));
    }).catch(e=>{experimentalPipelinePromise=null;throw e;});
  }
- const classifier=await experimentalPipelinePromise;
+ const {classifier,RawImage}=await experimentalPipelinePromise;
  // Decode locally and downscale to avoid huge source images.
  const bitmap=await createImageBitmap(file);
  try{
@@ -43,7 +43,8 @@ async function runExperimentalDetector(file){
   if(!ctx)throw Error('Canvas non disponibile');
   ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
   const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('Impossibile elaborare l’immagine')),'image/png'));
-  const outputs=await classifier(blob,{top_k:2});
+  const decoded=await RawImage.fromBlob(blob);
+  const outputs=await classifier(decoded,{top_k:2});
   return interpretAiScores(outputs);
  }finally{bitmap.close();}
 }
